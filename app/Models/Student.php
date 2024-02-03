@@ -4,9 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Student extends Model
 {
+    use HasFactory, SoftDeletes;
+
     protected $table = 'students';
     protected $primaryKey = 'id';
     protected $fillable = [
@@ -14,7 +17,14 @@ class Student extends Model
         'gender',
         'email',
         'is_active',
+        'deleted_at',
     ];
 
-    use HasFactory;
+    public function softDeleteWithTimezone()
+    {
+        $this->update([
+            'deleted_at' => now()->timezone('GMT+8'),
+            'is_active' => 0,
+        ]);
+    }
 }

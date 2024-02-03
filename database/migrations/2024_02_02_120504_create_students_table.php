@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('email', 255);
             $table->tinyInteger('is_active')->default(1)->comment('1=active, 0=not active');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

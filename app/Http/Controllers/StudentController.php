@@ -7,10 +7,6 @@ use App\Models\Student;
 
 class StudentController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-
     protected $student;
 
     public function __construct()
@@ -20,28 +16,26 @@ class StudentController extends Controller
 
     public function index()
     {
-        return $this->student->all();
+        return $this->student->where('is_active', 1)
+                    ->whereNull('deleted_at')
+                    ->get();
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         return $this->student->create($request->all());
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
-        return $student = $this->student->find($id);
+        $student = $this->student->where('id', $id)
+                        ->where('is_active', 1)
+                        ->whereNull('deleted_at')
+                        ->first();
+
+        return $student;
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
         $student = $this->student->find($id);
@@ -50,13 +44,12 @@ class StudentController extends Controller
         return $student;
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
         $student = $this->student->find($id);
 
-        return $student->delete();
+        $student->softDeleteWithTimezone();
+
+        return 'Successfully deleted user '.$student['fullname'];
     }
 }
