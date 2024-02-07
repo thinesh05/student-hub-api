@@ -23,7 +23,13 @@ class StudentController extends Controller
 
     public function store(Request $request)
     {
-        return $this->student->create($request->all());
+        try {
+            $createdStudent = $this->student->create($request->all());
+        
+            return response()->json(['success' => true, 'data' => $createdStudent], 201);
+        } catch (\Exception $e) {
+            return response(null, 500);
+        }        
     }
 
     public function show(string $id)
@@ -50,6 +56,6 @@ class StudentController extends Controller
 
         $student->softDeleteWithTimezone();
 
-        return 'Successfully deleted user '.$student['fullname'];
+        return response()->json(['success' => true], 201);
     }
 }
